@@ -1,0 +1,727 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Функциональная садо-мазо разработка на TypeScript и F# с примесью Elm</title>
+    <!--<title>Как не лажать в Web, если я не знаю JavaScript?</title>-->
+    <meta name="author" content="Андрей Чебукин">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+    <div class="reveal">
+        <style type="text/css">
+            .reveal .left {
+                text-align: left
+            }
+
+            .reveal .right {
+                text-align: right
+            }
+
+            .code td {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 600px;
+            }
+
+            .code-left td:nth-child(2n+1) {
+                width: 400px;
+            }
+
+            .code-left td:nth-child(2n) {
+                width: 800px;
+            }
+
+            .qrcode td {
+                width: 500px;
+            }
+
+            code {
+                max-height: none !important;
+            }
+        </style>
+
+        <div class="slides">
+            <section class="left">
+                <h1>Функциональная садо-мазо разработка на TypeScript и F# с примесью Elm</h1>
+                <!--<h1>Как не лажать в Web, если я не знаю JavaScript?</h1>-->
+                <p class="right">
+                    <small>
+                        Андрей Чебукин<br />
+                        <a href="http://scrtcrcl.com">The Secret Circle solutions</a><br />
+                        КА ШАГ
+                    </small>
+                </p>
+            </section>
+            <section>
+                <h2>Андрей Чебукин</h2>
+                <ul>
+                    <li>Microsoft Student Partner</li>
+                    <li>MCSD: Windows 8 C#</li>
+                    <li>Преподаватель: КА ШАГ</li>
+                    <li>Соучредитель: The Secret Circle Solutions</li>
+                    <li>Интересы: F#, functional programming, ALM, Azure</li>
+                </ul>
+            </section>
+            <section class="left">
+                <h2>Повестка</h2>
+                <!--<ul>
+                    <li>О функциональном подходе</li>
+                    <li>Что есть в F# такого, чего нет в TypeScript</li>
+                    <li>Fable</li>
+                    <li>Elmish</li>
+                    <li>QuickStart</li>
+                </ul>-->
+                <ul>
+                    <li>Ужасаться от функциональщины</li>
+                    <li>Запиливать и выпиливать из JS типы</li>
+                    <li>Писать на языке без фигурных скобочек</li>
+                    <li>Elm-иться</li>
+                </ul>
+            </section>
+            <section class="left">
+                <ul>
+                    <li>Кто взял ноут?</li>
+                    <li class="fragment">Кому впадло слушать?</li>
+                    <li class="fragment">Давай коди!</li>
+                </ul>
+            </section>
+            <section>
+                <!--<h2>Не скучай! Пробуй сейчас!</h2>-->
+                <table class="qrcode">
+                    <thead>
+                        <tr>
+                            <th>Fable</th>
+                            <th>Elmish</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                fable.io/pages/getting-started.html<br />
+                                <img src="content/Fable/fable.io_qr.png" alt="Fable getting started" />
+                            </td>
+                            <td>
+                                github.com/fable-elmish/templates  <br />
+                                <img src="content/Fable/fable-elmish_qr.png" alt="Fable Elmish sample" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section class="left">
+                <h2 class="impdecl">Императивное программирование</h2>
+                <h2 class="impdecl fragment">vs.<br />Декларативное</h2>
+                <ul>
+                    <li class="fragment"><h3>Функциональное</h3></li>
+                    <li class="fragment"><h3>Логическое</h3></li>
+                </ul>
+            </section>
+            <section>
+                <pre class="JavaScript">
+<code class="hljs data-trim">var value = 11; // absolutely random value
+var length = 5;</code></pre>
+                <div class="fragment">
+                    <h3>// Imperative</h3>
+<pre class="JavaScript">
+<code class="hljs data-trim">var array = new Array(length);
+for (var i = 0; i < length; i++) {
+    array[i] = 11;
+}</code></pre>
+                </div>
+                <div class="fragment">
+                    <h3>// Declarative</h3>
+<pre class="JavaScript">
+<code class="hljs data-trim">var array = new Array(length);
+array.fill(value);</code></pre>
+                </div>
+            </section>
+            <section data-background="#b5533c">
+                <section>
+                    <h2>Функциональное программирование</h2>
+                    <blockquote>парадигма программирования, в которой процесс вычисления трактуется как вычисление значений функций в математическом понимании последних</blockquote>
+                </section>
+                <section>
+                    <h2>Что такое математическое понимание функции?</h2>
+                    <h2 class="fragment">отсутствие побочного эффекта</h2>
+                </section>
+                <section>
+                    <h2>Императивный против функционального</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Меняем состояние</th>
+                                <th>Применяем функции</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <ul>
+                                        <li>Запись входных данных в память</li>
+                                        <li>Вычисление</li>
+                                        <li>Запись результатов в память</li>
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul>
+                                        <li>Применение функций ко выходным данным</li>
+                                        <li>Передача результатов или функций на вход другим функциям</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Основной оператор присвоение</strong></td>
+                                <td><strong>Нет присвоения</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </section>
+            </section>
+            <section data-background="content/Fable/Ну_нафига_те_это.png" data-background-size="contain"></section>
+            <section class="left">
+                <h2>Делать меньше ошибок</h2>
+                <ul>
+                    <li class="fragment">Математическая модель</li>
+                    <li class="fragment">Умный компилятор</li>
+                    <li class="fragment">Меньше кода</li>
+                    <li class="fragment">Больше проверок</li>
+                </ul>
+            </section>
+            <section>
+                <h2>И как быть с front-end?</h2>
+                <h2 class="fragment">Появился TypeScript!</h2>
+            </section>
+            <section>
+                <h2>А как нам TypeScript помогает?</h2>
+            </section>
+            <section>
+                <h1>Типы!</h1>
+            </section>
+            <section>
+                <h2>Типы это:</h2>
+                <ul>
+                    <li class="fragment">Проверка аргументов</li>
+                    <li class="fragment">Intellisense а не просто statement completion</li>
+                    <li class="fragment">Реализация предусловий и постусловий</li>
+                </ul>
+            </section>
+            <section>
+                <h2>Размеченное объединение</h2>
+                <table class="code">
+                    <thead>
+                        <tr>
+                            <th>TypeScript</th>
+                            <th>F#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <pre class="TypeScript">
+<code>type Shape =
+    { kind: "circle", radius: number } |
+    { kind: "rectangle", w: number,
+                         h: number } |
+    { kind: "square", size: number };
+</code></pre>
+                            </td>
+                            <td>
+                                <pre class="FSharp">
+<code>type Shape =
+    | Circle of radius : float
+    | Rectangle of w: float * h : float
+
+    | Square of size : float</code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>null- and undefined-aware типы</h2>
+                <table class="code">
+                    <thead>
+                        <tr>
+                            <th>TypeScript</th>
+                            <th>F#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <pre class="TypeScript">
+<code>s: string
+
+
+"compilerOptions": {
+    "strict": true
+  }
+
+s: string | null | undefined
+ </code></pre>
+                            </td>
+                            <td>
+                                <pre class="FSharp">
+<code>let s = "awesome string"
+
+
+
+
+
+
+let mutable s : string =
+    Unchecked.defaultof&lt;string&gt;</code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <table class="code">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2>null- and undefined-aware типы</h2>
+                                <p>--strictNullChecks</p>
+                            </td>
+                            <td>
+                                <pre class="TypeScript">
+<code>let x: number;
+let y: number | undefined;
+let z: number | null | undefined;
+x = 1;  // Ok
+y = 1;  // Ok
+z = 1;  // Ok
+x = undefined;  // Error
+y = undefined;  // Ok
+z = undefined;  // Ok
+x = null;  // Error
+y = null;  // Error
+z = null;  // Ok
+x = y;  // Error
+x = z;  // Error
+y = x;  // Ok
+y = z;  // Error
+z = x;  // Ok
+z = y;  // Ok</code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <table class="code">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <h2>Проверка на инициализа-цию</h2>
+                                <p>--strictNullChecks</p>
+                            </td>
+                            <td>
+                                <pre class="TypeScript">
+<code>let x: number;
+let y: number | null;
+let z: number | undefined;
+x;  // Error, reference not preceded by assignment
+y;  // Error, reference not preceded by assignment
+z;  // Ok
+x = 1;
+y = null;
+x;  // Ok
+y;  // Ok</code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Защита от null и undefined</h2>
+                <p>TypeScript</p>
+                <pre class="TypeScript">
+<code>declare function f(x: number): string;
+
+let x: number | null | undefined;
+if (x) {
+    f(x);  // Ok, type of x is number here
+}
+else {
+    f(x);  // Error, type of x is number? here
+}
+let a = x != null ? f(x) : "";  // Type of a is string
+let b = x && f(x);  // Type of b is string?</code></pre>
+            </section>
+            <section>
+                <h2>Избавление от null и undefined</h2>
+                <pre class="TypeScript">
+<code>function sum(a: number | null, b: number | null) {
+    return a + b;  // Produces value of type number
+}
+
+let z = null;  // Type of z is null but not any
+
+// postfix operator !
+function processEntity(e: Entity?) {
+    validateEntity(e);
+    let s = e!.name;  // Assert that e is non-null and access name
+}</code></pre>
+            </section>
+            <section>
+                <h2>Скопированный тип</h2>
+                <p>TypeScript</p>
+                <pre class="TypeScript">
+<code>type Item = { a: string, b: number, c: boolean };
+type T1 = { [P in "x" | "y"]: number }; // 2 поля типа number
+//        { x: number, y: number }
+type T2 = { [P in "x" | "y"]: P }; // 2 поля типа поля
+//        { x: "x", y: "y" }
+type T3 = { [P in "a" | "b"]: Item[P] }; // 2 поля взяв из Item тип
+//        { a: string, b: number }
+type T4 = { [P in keyof Item]: Date }; // все поля взяв имена
+//        { a: Date, b: Date, c: Date }
+type T5 = { [P in keyof Item]: Item[P] }; // все поля взяв имена и типы
+//        { a: string, b: number, c: boolean }</code></pre>
+            </section>
+            <section data-background="content/Fable/I_demand_more.png" data-background-size="contain" data-background-color="#000000"></section>
+            <section data-background="#b5533c"><h1>В TypeScript ещё чего-то не хватает?</h1></section>
+            <section>
+                <h2>Анализ типов в потоке управления</h2>
+                <p>TypeScript</p>
+                <pre class="TypeScript">
+<code>function foo(x: string | number | boolean) {
+    if (typeof x === "string") {
+        x; // type of x is string here
+        x = 1;
+        x; // type of x is number here
+    }
+    x; // type of x is number | boolean here
+}
+
+function bar(x: string | number) {
+    if (typeof x === "number") {
+        return;
+    }
+    x; // type of x is string here
+}</code></pre>
+            </section>
+            <section>
+                <h2></h2>
+                <table class="code code-left">
+                    <thead>
+                        <tr>
+                            <th>TypeScript</th>
+                            <th>F#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <pre class="TypeScript">
+<code>let count: number;
+count = 0;
+
+let count = 0;
+
+
+
+
+
+
+ </code></pre>
+                            </td>
+                            <td>
+                                <pre class="FSharp">
+<code>let count : float = 0.0
+
+
+let count = 0.0
+
+/// Humidifier element
+[&lt;AbstractClass&gt;]
+type Humidifier(parameters) =
+    inherit SingleFlowElement(parameters)
+    member __.Parameters : HumidifierParameters =
+                                    parameters</code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Исчерпывающее сопоставление с образцом</h2>
+                <table class="code">
+                    <thead>
+                        <tr>
+                            <th>TypeScript</th>
+                            <th>F#</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <pre class="TypeScript">
+<code>function assertNever(obj: never) {
+    throw new Error("Unexpected object");
+}
+
+function getArea(shape: Shape) {
+    switch (shape.kind) {
+        case "circle":
+    return Math.PI * shape.radius ** 2;
+        case "rectangle":
+            return shape.w * shape.h;
+        case "square":
+            return shape.size ** 2;
+    }
+    assertNever(shape);
+}</code></pre>
+                            </td>
+                            <td>
+                                <pre class="FSharp">
+<code data-noescape>let getArea = <strong>function</strong>
+    | Circle radius ->
+        Math.PI * radius ** 2
+    | Rectangle (w, h) -> w * h
+    | Square size -> size ** 2
+
+
+let getArea shape =
+    <strong>match shape with</strong>
+    | Circle radius ->
+        Math.PI * radius ** 2
+    | Rectangle (w, h) -> w * h
+    | Square size -> size ** 2
+
+ </code></pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+            <section>
+                <h2>Единицы измерения</h2>
+                <p>Объявление</p>
+                <pre class="FSharp">
+                <code>module Measures =
+    open Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols
+
+    let removeMeasure (value : float&lt;_&gt;) = float value
+
+    /// Hours
+    [&lt;Measure&gt;]
+    type h
+
+    /// Defines ratio betwean s and h
+    let ``s per h`` = 1.&lt;h&gt;/3600.&lt;s&gt;
+    /// Converts s to h
+    let ``s to h`` (value : float&lt;s&gt;) = value * ``s per h``
+    /// Defines ratio betwean h and s
+    let ``h per s`` = 3600.&lt;s&gt;/1.&lt;h&gt;
+    /// Converts h to s
+    let ``h to s`` (value : float&lt;h&gt;) = value * ``h per s``</code></pre>
+            </section>
+            <section>
+                <h2>Единицы измерения</h2>
+                <p>Использование</p>
+                <pre class="FSharp">
+                <code style="height:500px">module Air =
+    [&lt;Literal&gt;] let P0 = 101325.0&lt;Pa&gt;;
+    [&lt;Literal&gt;] let Ma = 28.96&lt;g/mol&gt;;
+    [&lt;Literal&gt;] let ro = 2500500.0;
+    /// &lt;remarks&gt;g&lt;/remarks&gt;
+    [&lt;Literal&gt;] let gravitationAcceleration = 9.81&lt;m/s^2&gt;;
+    [&lt;Literal&gt;] let seaLevelStandardTemperature = 288.15&lt;K&gt;
+    [&lt;Literal&gt;] let R = 8.31441&lt;J/mol*K&gt;;
+
+    /// &lt;remarks&gt;Patm&lt;/remarks&gt;
+    let getAtmosphericPressure elevation =
+        P0 * exp  (-Ma * gravitationAcceleration
+                       * elevation / R
+                       * seaLevelStandardTemperature)
+
+    /// &lt;remarks&gt;Pd&lt;/remarks&gt;
+    let getSaturationPressure temperature : float&lt;Pa&gt; =
+        let K1 = 7.9151;
+        let K2 = 2.6726;
+        let K3 = 8.6250e-1;
+        let T = temperature + 273.16;
+        let T1 = 1.0 / T - (K1 - K2 * log10(T))
+                     * 1e-3 - K3 * T * 1e-6;
+
+        let K11 = 5.797855;
+        let K12 = 4.170295;
+        let K21 = -4.320414e3;
+        let K22 = -3.177e3;
+        let K31 = 1.7691542e5
+        let K32 = 9.7648047e3;
+        let T2 = if temperature &gt; 0.0
+                 then K12 + T1 * (K22 + T1 * K32)
+                 else K11 + T1 * (K21 + T1 * K31)
+
+        LanguagePrimitives.FloatWithMeasure&lt;Pa&gt;(10.0**removeMeasure(T2) * 1e5)</code></pre>
+            </section>
+            <section>
+                <h2>Поставщики типов</h2>
+                <img data-src="content/Fable/Type_providers2.png" alt="Type providers" />
+            </section>
+            <section>
+                <h2>Зависимый тип</h2>
+                <blockquote>In functional programming languages like Agda, ATS, Coq, Epigram, Idris, and Shen, dependent types prevent bugs by allowing extremely expressive types</blockquote>
+            </section>
+            <section data-background="#4d7e65">
+                <h1>Demo</h1>
+                <h2>Fable</h2>
+                <p>The compiler that emits JavaScript you can be proud of!</p>
+            </section>
+            <section>
+                <h1>Elm???</h1>
+            </section>
+            <section>
+                <h2>Цели Elm</h2>
+                <ul>
+                    <li>Простота языка</li>
+                    <li>Простота использования</li>
+                    <li>Средства разрботки, которые реально помогают</li>
+                </ul>
+            </section>
+            <section data-background="content/Fable/Elm_performance.png"></section>
+            <section data-background="content/Fable/Elm_errors1.png" data-background-size="contain"></section>
+            <section data-background="content/Fable/Elm_errors2.png" data-background-size="contain"></section>
+            <section data-background="content/Fable/Elm_errors3.png" data-background-size="contain"></section>
+            <section>
+                <h2>Концепция</h2>
+                <img data-src="content/Fable/Elm_concept.png" alt="Концепция Elm" />
+            </section>
+            <section>
+                <h2>Подключения библиотек</h2>
+                <pre class="FSharp">
+<code>#r "../node_modules/fable-core/Fable.Core.dll"
+#r "../node_modules/fable-elmish/Fable.Elmish.dll"
+#r "../node_modules/fable-elmish-react/Fable.Elmish.React.dll"
+#r "../node_modules/fable-react/Fable.React.dll"
+
+open Fable.Core
+open Fable.React
+open Fable.Import.React
+open Fable.Helpers.React.Props
+
+open Elmish
+open Elmish.React</code></pre>
+            </section>
+            <section>
+                <h2>Модель, сообщения, обновление</h2>
+                <pre class="FSharp">
+<code>type Model = { Count : int }
+
+type Messages = Incr | Decr
+
+// Messages -> Model -> Model
+let update msg model =
+    match msg with
+    | Incr -> { Count = model.Count + 1 }
+    | Decr -> { Count = model.Count - 1 }</code></pre>
+            </section>
+            <section>
+                <h2>Отображение</h2>
+                <pre class="FSharp">
+<code>// View : Model -> (Messages -> unit) -> ReactElement
+let view model dispatch =
+    div
+      []
+      [
+          button [ OnClick (fun _ -> dispatch Incr) ] [ text "Increment" ]
+          div [] [ text (string model.Count) ]
+          button [ OnClick (fun _ -> dispatch Decr) ] [ text "Decrement"]
+      ]</code></pre>
+            </section>
+            <section data-background="#4d7e65">
+                <h1>Demo</h1>
+                <h2>Elm + F# front-back code sharing</h2>
+            </section>
+            <section data-background-color="#000000">
+                <h2>Спасибо за внимание!</h2>
+                <br />
+                <h1>Вопросы?</h1>
+                <br />
+                <ul>
+                    <li>GitHub <a href="http://www.github.com/xperiandri/">github.com/xperiandri/</a></p>
+                    <li>Facebook <a href="http://www.fb.com/xperiandri/">fb.com/xperiandri/</a></p>
+                    <li>Twitter <a href="http://www.twitter.com/xperiandri/">twitter.com/xperiandri/</a></p>
+                    <li>YouTube <a href="http://www.youtube.com/user/andriicsharp/">youtube.com/user/andriicsharp/</a></p>
+                </ul>
+            </section>
+            <section>
+                <!--<h2>Не скучай! Пробуй сейчас!</h2>-->
+                <table class="qrcode">
+                    <thead>
+                        <tr>
+                            <th>Fable - F# |> BABEL</th>
+                            <th>F# for fun and profit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                fable.io                 <br />
+                                <img src="content/Fable/fable.io_qr.png" alt="Fable getting started" />
+                            </td>
+                            <td>
+                                fsharpforfunandprofit.com<br />
+                                <img src="content/Fable/FSharp_for_fun_and_profit_qr.png" alt="F# for fun and profit" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+    <script>
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            dependencies: [
+                { src: 'plugin/markdown/marked.js' },
+                { src: 'plugin/markdown/markdown.js' },
+                { src: 'plugin/notes/notes.js', async: true },
+                { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+            ],
+            width: 1200,
+            height: 750,
+
+            parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+            parallaxBackgroundSize: '', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
+            parallaxBackgroundHorizontal: 10,
+            parallaxBackgroundVertical: 50
+
+            //parallaxBackgroundImage: 'content/Fable/parallax-background.png', // e.g. "https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg"
+            //// Parallax background size
+            //parallaxBackgroundSize: '4000px 1500px', // CSS syntax, e.g. "2100px 900px" - currently only pixels are supported (don't use % or auto)
+            //// Number of pixels to move the parallax background per slide
+            //// - Calculated automatically unless specified
+            //// - Set to 0 to disable movement along an axis
+            //parallaxBackgroundHorizontal: 150,
+            //parallaxBackgroundVertical: 50
+        });
+    </script>
+</body>
+</html>
